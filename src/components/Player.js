@@ -15,6 +15,7 @@ export const Player = ({ advanced }) => {
   const [nextAudio, setNextAudio] = useState(null)
   const [nextAudioId, setNextAudioId] = useState(null)
   const [buttonActive, setButtonActive] = useState(null)
+  const [lastActive, setLastActive] = useState(null)
   const [currentAudioPlaying, setCurrentAudioPlaying] = useState(false)
   const [currentAudio, setCurrentAudio] = useState(null)
 
@@ -67,6 +68,7 @@ export const Player = ({ advanced }) => {
   const playSimpleHandler = (index) => {
     if (currentAudio) {
       currentAudio.pause()
+      setCurrentAudioPlaying(false)
     }
     if (index !== buttonActive) {
       const audio = () => {
@@ -86,7 +88,7 @@ export const Player = ({ advanced }) => {
       setCurrentAudioPlaying(true)
     } else {
       setButtonActive(null)
-      setCurrentAudio(null)
+      // setCurrentAudio(null)
     }
   }
 
@@ -116,19 +118,26 @@ export const Player = ({ advanced }) => {
       setCurrentAudioPlaying(true)
     } else {
       currentAudio.pause()
-      setCurrentAudioPlaying(true)
+      setCurrentAudioPlaying(false)
       setButtonActive(null)
     }
   }
 
   const playHandler = (index) => {
+    setLastActive(index)
     advanced ? playAdvancedHandler(index) : playSimpleHandler(index)
   }
 
   const pauseHandler = () => {
     if (currentAudio) {
       setCurrentAudioPlaying(!currentAudioPlaying)
-      currentAudio.paused ? currentAudio.play() : currentAudio.pause()
+      if (currentAudio.paused) {
+        currentAudio.play()
+        setButtonActive(lastActive)
+      } else {
+        currentAudio.pause()
+        setButtonActive(null)
+      }
     }
   }
 
