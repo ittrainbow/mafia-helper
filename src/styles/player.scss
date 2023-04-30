@@ -1,0 +1,29 @@
+.buttons-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.buttons {
+  display: flex;
+  gap: 20px;
+}
+
+.button,
+.button-active {
+  width: 100px;
+  height: 60px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+  transition: 0.4s ease-in-out !important;
+  border-radius: 15px !important;
+}
+
+.button {
+  scale: 1;
+}
+
+.button-active {
+  scale: 0.95;
+  background-color:#50586b !important;
+}

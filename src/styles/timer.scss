@@ -1,0 +1,18 @@
+.timer,
+.timer-active {
+  width: 300px;
+  cursor: pointer;
+  transition: 0.8s ease-in-out;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.timer {
+  border-radius: 0%;
+  scale: 1;
+}
+
+.timer-active {
+  background-color: #282f44;
+  border-radius: 50%;
+  scale: 0.95;
+}
