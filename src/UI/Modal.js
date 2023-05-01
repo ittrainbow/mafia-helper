@@ -38,6 +38,7 @@ export const Modal = ({ modal, onClose, advanced, setAdvanced, bells, setBells }
   return (
     <ThemeProvider theme={darkTheme}>
       <MUIModal
+        className="modal"
         open={modal}
         onClose={closeHandler}
         aria-labelledby="modal-modal-title"
@@ -55,13 +56,13 @@ export const Modal = ({ modal, onClose, advanced, setAdvanced, bells, setBells }
               <div className="modal-text">Piano loop</div>
             </div>
             <div className="modal-switch">
-              <div className="modal-text">Bells Off</div>
+              <div className="modal-text">Bells off</div>
               <Switch
                 checked={bells}
                 onChange={onChangeBellHandler}
                 inputProps={{ 'aria-label': 'controlled' }}
               />
-              <div className="modal-text">Bells On</div>
+              <div className="modal-text">Bells on</div>
             </div>
             <Button onClick={() => onClose(false)} className="modal-button button" label="OK" />
           </Box>

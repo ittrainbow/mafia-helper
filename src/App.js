@@ -25,7 +25,7 @@ const App = () => {
 
     setPaddingTop(paddingVertical)
     setPaddingBottom(paddingVertical)
-    setTimeout(() => setOpacity(1), 500)
+    setTimeout(() => setOpacity(1), 450)
 
     nosleep.enable() // eslint-disable-next-line
   }, [])
