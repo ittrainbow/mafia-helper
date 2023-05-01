@@ -8,7 +8,6 @@ const num = 18
 
 export const Player = ({ advanced }) => {
   const storage = getStorage(app)
-
   const [audioMafia, setAudioMafia] = useState(null)
   const [audioRoles, setAudioRoles] = useState(null)
   const [audioNight, setAudioNight] = useState(null)
@@ -33,15 +32,15 @@ export const Player = ({ advanced }) => {
   ]
 
   useEffect(() => {
+    const url = (variable) => `gs://circle-38cc7.appspot.com/${variable}.mp3`
+
     audioArray.forEach((audio) => {
       const { label, setter } = audio
-      const url = `gs://circle-38cc7.appspot.com/${label}.mp3`
-      getDownloadURL(ref(storage, url)).then((response) => setter(response))
+      getDownloadURL(ref(storage, url(label))).then((response) => setter(response))
     })
 
     const array = Array.from(Array(num).keys()).sort((a, b) => 0.5 - Math.random())
-    const url = `gs://circle-38cc7.appspot.com/${array[num - 1]}.mp3`
-    getDownloadURL(ref(storage, url)).then((response) => {
+    getDownloadURL(ref(storage, url(array[num - 1]))).then((response) => {
       const nextAudio = response
       setNextAudio(nextAudio)
     })

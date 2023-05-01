@@ -2,6 +2,11 @@ import * as React from 'react'
 import Box from '@mui/material/Box'
 import { Modal as MUIModal, Fade } from '@mui/material/'
 import { Switch } from '@mui/material'
+import { ThemeProvider } from '@mui/system'
+
+import { darkTheme } from './theme'
+
+import { Button } from './Button'
 
 const style = {
   position: 'absolute',
@@ -15,17 +20,23 @@ const style = {
   p: 4
 }
 
-export const Modal = ({ modal, onClose, advanced, setAdvanced }) => {
+export const Modal = ({ modal, onClose, advanced, setAdvanced, bells, setBells }) => {
   const closeHandler = () => onClose(false)
 
-  const onChangeHandler = () => {
+  const onChangeLoopHandler = () => {
     const newValue = !advanced
     localStorage.setItem('advanced', newValue)
     setAdvanced(newValue)
   }
 
+  const onChangeBellHandler = () => {
+    const newValue = !bells
+    localStorage.setItem('bells', newValue)
+    setBells(newValue)
+  }
+
   return (
-    <>
+    <ThemeProvider theme={darkTheme}>
       <MUIModal
         open={modal}
         onClose={closeHandler}
@@ -33,17 +44,29 @@ export const Modal = ({ modal, onClose, advanced, setAdvanced }) => {
         aria-describedby="modal-modal-description"
       >
         <Fade in={modal}>
-          <Box sx={style} className="modal-body">
-            <div className="modal-text">Simple player</div>
-            <Switch
-              checked={advanced}
-              onChange={onChangeHandler}
-              inputProps={{ 'aria-label': 'controlled' }}
-            />
-            <div className="modal-text">Piano loop</div>
+          <Box sx={style} className="modal-container">
+            <div className="modal-switch">
+              <div className="modal-text">Simple player</div>
+              <Switch
+                checked={advanced}
+                onChange={onChangeLoopHandler}
+                inputProps={{ 'aria-label': 'controlled' }}
+              />
+              <div className="modal-text">Piano loop</div>
+            </div>
+            <div className="modal-switch">
+              <div className="modal-text">Bells Off</div>
+              <Switch
+                checked={bells}
+                onChange={onChangeBellHandler}
+                inputProps={{ 'aria-label': 'controlled' }}
+              />
+              <div className="modal-text">Bells On</div>
+            </div>
+            <Button onClick={() => onClose(false)} className="modal-button button" label="OK" />
           </Box>
         </Fade>
       </MUIModal>
-    </>
+    </ThemeProvider>
   )
 }

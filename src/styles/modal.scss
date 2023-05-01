@@ -1,17 +1,30 @@
-.modal-body {
+.modal-container {
   display: flex;
-  text-align: center;
-  justify-content: space-between;
-  max-width: 240px;
-  border-radius: 12px;
+  flex-direction: column;
+  max-width: calc(100vw * 0.7);
+  gap: 10px;
   background-color: #30384b !important;
-  border: 1px solid #d6d7d9;
-  transition: 0.5s ease-in;
+  // border: 1px solid #d6d7d9;
+  border-radius: 12px;
+  align-items: center;
+}
+
+.modal-switch {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  flex-direction: row;
+  transition: 0.5s space-between;
 }
 
 .modal-text {
   display: flex;
+  width: 40%;
   align-items: center;
   justify-content: center;
   color: #d6d7d9;
+}
+
+.modal-button {
+  margin-top: 20px !important;
 }
