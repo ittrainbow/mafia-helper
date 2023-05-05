@@ -45,6 +45,7 @@ export const Timer = ({ bells }) => {
       setTimeout(() => setPercentage(newPercentage), 25)
     }
     setColor(color)
+    setColor(color)
 
     const tics = Math.round((percentage * 60) / 100)
     const text = tics === 60 ? '01:00' : tics > 9 ? '00:' + tics : '00:0' + tics
