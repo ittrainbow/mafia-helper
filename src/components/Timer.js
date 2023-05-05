@@ -15,12 +15,6 @@ export const Timer = ({ bells }) => {
   const [playIsOn, setPlayIsOn] = useState(false)
   const [percentage, setPercentage] = useState(100)
 
-  // useEffect(() => {
-  //   if (playIsOn && bells && percentage < 19 && percentage > 18) bell10.play()
-  //   if (playIsOn && bells && percentage < 0.5) setTimeout(() => bell0.play(), 500)
-  //   // eslint-disable-next-line
-  // }, [percentage])
-
   useEffect(() => {
     const url = (variable) => `gs://circle-38cc7.appspot.com/${variable}.mp3`
 
@@ -51,19 +45,9 @@ export const Timer = ({ bells }) => {
       setTimeout(() => setPercentage(newPercentage), 25)
     }
     setColor(color)
-    setColor(color)
-    setColor(color)
 
     const tics = Math.round((percentage * 60) / 100)
     const text = tics === 60 ? '01:00' : tics > 9 ? '00:' + tics : '00:0' + tics
-
-    if (playIsOn && bells && tics === 10) bell10.play()
-    if (playIsOn && bells && tics === 0) bell0.play()
-
-    setTimerText(text)
-
-    // eslint-disable-next-line
-  }, [percentage, playIsOn])
 
     if (playIsOn && bells && tics === 10) bell10.play()
     if (playIsOn && bells && tics === 0) bell0.play()
@@ -81,7 +65,6 @@ export const Timer = ({ bells }) => {
     <div className={getClass} onClick={click}>
       <CircularProgressbar
         value={percentage}
-        text={timerText}
         text={timerText}
         percentage={percentage}
         strokeWidth={2 + (100 - percentage) * 0.03}
