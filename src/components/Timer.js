@@ -16,12 +16,6 @@ export const Timer = ({ bells }) => {
   const [playIsOn, setPlayIsOn] = useState(false)
   const [percentage, setPercentage] = useState(100)
 
-  // useEffect(() => {
-  //   if (playIsOn && bells && percentage < 19 && percentage > 18) bell10.play()
-  //   if (playIsOn && bells && percentage < 0.5) setTimeout(() => bell0.play(), 500)
-  //   // eslint-disable-next-line
-  // }, [percentage])
-
   useEffect(() => {
     const url = (variable) => `gs://circle-38cc7.appspot.com/${variable}.mp3`
 
@@ -39,26 +33,27 @@ export const Timer = ({ bells }) => {
 
   useEffect(() => {
     const newPercentage = Math.round((percentage - 0.417) * 100) / 100 // default 417
-    if (playIsOn) {
+
+    playIsOn &&
       setTimeout(() => {
         newPercentage >= 0 && setPercentage(newPercentage)
         if (newPercentage < 0.5) setTimeout(() => setPlayIsOn(false), 1000)
       }, 250) // default 250
-    }
-    const color = getColor(percentage)
 
-    if (!playIsOn) {
-      const newPercentage = percentage + 1 > 100 ? 100 : percentage + 1
-      setTimeout(() => setPercentage(newPercentage), 25)
-    }
-    setColor(color)
+    !playIsOn &&
+      setTimeout(() => {
+        const newPercentage = percentage + 1 > 100 ? 100 : percentage + 1
+        setPercentage(newPercentage)
+      }, 25)
 
     const tics = Math.round((percentage * 60) / 100)
     const text = tics === 60 ? '01:00' : tics > 9 ? '00:' + tics : '00:0' + tics
+    const color = getColor(percentage)
 
     if (playIsOn && bells && tics === 10) bell10.play()
     if (playIsOn && bells && tics === 0) bell0.play()
 
+    setColor(color)
     setTimerText(text)
 
     // eslint-disable-next-line
