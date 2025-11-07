@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from 'react'
 import NoSleep from 'nosleep.js'
+import { useEffect, useState } from 'react'
 
-import { Timer } from './components/Timer'
-import { Player } from './components/Player'
-import { Settings } from './components/Settings'
-import { Modal } from './UI/Modal'
+import { Player, Settings, Timer } from './components'
+import { SettingsModal } from './ui'
 
 const getAdvanced = localStorage.getItem('advanced') === 'true' || false
 const getBells = localStorage.getItem('bells') === 'true' || false
 
-const App = () => {
+export function App() {
   const nosleep = new NoSleep()
   const [modal, setModal] = useState(false)
   const [advanced, setAdvanced] = useState(getAdvanced)
@@ -26,14 +24,18 @@ const App = () => {
 
   return (
     <>
-      <div className="container" style={{ opacity }}>
+      <div
+        className={`flex flex-col px-12 transition-opacity duration-500 ease-in box-border h-screen max-h-screen overflow-hidden justify-center items-center relative mobile:px-5 ${
+          opacity === 1 ? 'opacity-100' : 'opacity-0'
+        }`}
+      >
         <Settings showModalHandler={showModalHandler} modal={modal} />
-        <div className="inner-container">
+        <div className="box-border flex flex-col items-center gap-10 justify-between px-12 w-full mt-0 mobile:px-5 mobile:gap-8">
           <Timer bells={bells} />
           <Player advanced={advanced} />
         </div>
       </div>
-      <Modal
+      <SettingsModal
         modal={modal}
         onClose={showModalHandler}
         advanced={advanced}
@@ -44,5 +46,3 @@ const App = () => {
     </>
   )
 }
-
-export default App

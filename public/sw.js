@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 const CACHE_NAME = 'mafia-helper-v1'
 const urlsToCache = [
   '/',
@@ -38,12 +39,12 @@ self.addEventListener('activate', (event) => {
       // Очищаем все старые кэши
       caches.keys().then((cacheNames) => {
         return Promise.all(
-          cacheNames.map((cacheName) => {
-            if (cacheName !== CACHE_NAME) {
+          cacheNames
+            .filter((cacheName) => cacheName !== CACHE_NAME)
+            .map((cacheName) => {
               console.log('Deleting old cache on activate:', cacheName)
               return caches.delete(cacheName)
-            }
-          })
+            })
         )
       }),
       // Берем контроль над всеми страницами

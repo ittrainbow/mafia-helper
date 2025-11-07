@@ -2,13 +2,12 @@ import { getDownloadURL, getStorage, ref } from 'firebase/storage'
 import { useEffect, useState } from 'react'
 
 import { app } from '../db/firebase'
-import { Button } from '../UI/Button'
+import { Button } from '../ui'
 
 const num = 18
 
-export const Player = ({ advanced }) => {
+export function Player({ advanced }) {
   const storage = getStorage(app)
-  console.log(123, storage)
   const [audioRoles, setAudioRoles] = useState(null)
   const [audioNight, setAudioNight] = useState(null)
   const [audioBreak, setAudioBreak] = useState(null)
@@ -27,12 +26,6 @@ export const Player = ({ advanced }) => {
     { index: 1, label: 'new_dogovorka', setter: setAudioDogovorka, disabled: !audioDogovorka, buttonText: 'Договорка' },
     { index: 2, label: 'new_night', setter: setAudioNight, disabled: !audioNight, buttonText: 'Ночь' },
     { index: 3, label: 'new_break', setter: setAudioBreak, disabled: !audioBreak, buttonText: 'Перерыв' }
-    // {
-    //   index: 2,
-    //   label: 'Night',
-    //   setter: setAudioNight,
-    //   disabled: advanced ? !nextAudio : !audioNight
-    // }
   ]
 
   useEffect(() => {
@@ -54,18 +47,16 @@ export const Player = ({ advanced }) => {
   }, [advanced])
 
   useEffect(() => {
-    if (array && nextAudioId) {
-      const url = `gs://circle-38cc7.appspot.com/${array[nextAudioId]}.mp3`
-      getDownloadURL(ref(storage, url)).then((response) => setNextAudio(response))
-    }
+    if (!array || !nextAudioId) return
+    const url = `gs://circle-38cc7.appspot.com/${array[nextAudioId]}.mp3`
+    getDownloadURL(ref(storage, url)).then((response) => setNextAudio(response))
     // eslint-disable-next-line
   }, [nextAudioId, array])
 
   useEffect(() => {
-    if (currentAudio) {
-      currentAudio.play()
-      currentAudio.loop = true
-    }
+    if (!currentAudio) return
+    currentAudio.play()
+    currentAudio.loop = true
   }, [currentAudio])
 
   const playSimpleHandler = (index) => {
@@ -73,6 +64,7 @@ export const Player = ({ advanced }) => {
       currentAudio.pause()
       setCurrentAudioPlaying(false)
     }
+
     if (index !== buttonActive) {
       const audio = () => {
         switch (index) {
@@ -90,11 +82,10 @@ export const Player = ({ advanced }) => {
       }
       setCurrentAudio(audio)
       setButtonActive(index)
-      setCurrentAudioPlaying(true)
-    } else {
-      setButtonActive(null)
-      // setCurrentAudio(null)
+      return setCurrentAudioPlaying(true)
     }
+
+    setButtonActive(null)
   }
 
   const playAdvancedHandler = (index) => {
@@ -136,67 +127,65 @@ export const Player = ({ advanced }) => {
     advanced ? playAdvancedHandler(index) : playSimpleHandler(index)
   }
 
-  const pauseHandler = () => {
-    if (currentAudio) {
-      setCurrentAudioPlaying(!currentAudioPlaying)
-      if (currentAudio.paused) {
-        currentAudio.play()
-        setButtonActive(lastActive)
-      } else {
-        currentAudio.pause()
-        setButtonActive(null)
-      }
-    }
-  }
-
-  const stopHandler = () => {
-    if (currentAudio) {
-      currentAudio.pause()
-      setCurrentAudio(null)
-      setButtonActive(null)
-    }
-  }
-
   return (
-    <div className="buttons-container">
-      <div className="buttons">
+    <div className="flex flex-col items-center gap-5 w-full">
+      <div className="flex gap-5 w-full justify-center">
         {audioArray.slice(0, 2).map((audio) => {
           const { buttonText, index, disabled } = audio
-          const getClass = () => (index === buttonActive ? 'button-active' : 'button')
           return (
             <Button
               key={index}
-              className={getClass()}
               onClick={() => playHandler(index)}
               disabled={disabled}
               label={buttonText}
+              isActive={index === buttonActive}
             />
           )
         })}
       </div>
-      <div className="buttons">
+      <div className="flex gap-5 w-full justify-center">
         {audioArray.slice(2, 4).map((audio) => {
           const { buttonText, index, disabled } = audio
-          const getClass = () => (index === buttonActive ? 'button-active' : 'button')
           return (
             <Button
               key={index}
-              className={getClass()}
               onClick={() => playHandler(index)}
               disabled={disabled}
               label={buttonText}
+              isActive={index === buttonActive}
             />
           )
         })}
       </div>
-      <div className="buttons">
+      <div className="flex gap-5 w-full justify-center">
         <Button
-          className="button"
           disabled={!currentAudio}
-          onClick={pauseHandler}
+          onClick={() => {
+            if (!currentAudio) return
+
+            setCurrentAudioPlaying(!currentAudioPlaying)
+
+            if (currentAudio.paused) {
+              currentAudio.play()
+              return setButtonActive(lastActive)
+            }
+
+            currentAudio.pause()
+            setButtonActive(null)
+          }}
           label={currentAudioPlaying || !currentAudio ? 'Пауза' : 'Играть'}
         />
-        <Button className="button" disabled={!currentAudio} onClick={stopHandler} label="Стоп" />
+        <Button
+          disabled={!currentAudio}
+          onClick={() => {
+            if (!currentAudio) return
+
+            currentAudio.pause()
+            setCurrentAudio(null)
+            setButtonActive(null)
+          }}
+          label="Стоп"
+        />
       </div>
     </div>
   )

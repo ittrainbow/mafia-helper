@@ -4,9 +4,14 @@ import { CircularProgressbar } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css'
 
 import { app } from '../db/firebase'
-import { getColor } from '../helpers'
 
-export const Timer = ({ bells }) => {
+function getColor(percentage) {
+  const red = percentage < 50 ? 255 : (255 - Math.floor(percentage * 2.55)) * 2
+  const green = percentage < 50 ? 255 - Math.floor((50 - percentage) * 5.1) : 255
+  return `rgba(${red}, ${green}, 0, 1)`
+}
+
+export function Timer({ bells }) {
   const storage = getStorage(app)
 
   const [timerText, setTimerText] = useState('01:00')
@@ -41,13 +46,11 @@ export const Timer = ({ bells }) => {
 
   useEffect(() => {
     if (!playIsOn) {
-      // Очищаем таймаут обратного отсчета перед запуском перемотки
       if (countdownTimeoutRef.current) {
         clearTimeout(countdownTimeoutRef.current)
         countdownTimeoutRef.current = null
       }
 
-      // Очищаем предыдущий интервал перед созданием нового
       if (rewindIntervalRef.current) {
         clearInterval(rewindIntervalRef.current)
         rewindIntervalRef.current = null
@@ -67,12 +70,11 @@ export const Timer = ({ bells }) => {
         })
       }, 25)
     } else {
-      // Очищаем интервал обратной перемотки при запуске таймера
       if (rewindIntervalRef.current) {
         clearInterval(rewindIntervalRef.current)
         rewindIntervalRef.current = null
       }
-      // Сбрасываем процент в 100% при запуске таймера
+
       setPercentage((prevPercentage) => {
         if (prevPercentage < 100) {
           return 100
@@ -95,7 +97,6 @@ export const Timer = ({ bells }) => {
 
   useEffect(() => {
     if (playIsOn) {
-      // Очищаем предыдущий таймаут перед созданием нового
       if (countdownTimeoutRef.current) {
         clearTimeout(countdownTimeoutRef.current)
         countdownTimeoutRef.current = null
@@ -103,30 +104,28 @@ export const Timer = ({ bells }) => {
 
       const scheduleNextTick = () => {
         countdownTimeoutRef.current = setTimeout(() => {
-          // Проверяем актуальное состояние через ref
           if (!playIsOnRef.current) {
             countdownTimeoutRef.current = null
             return
           }
 
           setPercentage((prevPercentage) => {
-            const newPercentage = Math.round((prevPercentage - 0.417) * 100) / 100 // 0.417% per 250ms for 60 seconds
+            const newPercentage = Math.round((prevPercentage - 0.417) * 100) / 100
             if (newPercentage >= 0) {
               return newPercentage
             }
             return 0
           })
           countdownTimeoutRef.current = null
-          // Рекурсивно запускаем следующий тик, если таймер все еще активен
+
           if (playIsOnRef.current) {
             scheduleNextTick()
           }
-        }, 250) // default 250
+        }, 250)
       }
 
       scheduleNextTick()
     } else {
-      // Очищаем таймаут при остановке таймера
       if (countdownTimeoutRef.current) {
         clearTimeout(countdownTimeoutRef.current)
         countdownTimeoutRef.current = null
@@ -140,7 +139,6 @@ export const Timer = ({ bells }) => {
     if (playIsOn && bells && tics === 10) bell10.play()
     if (playIsOn && bells && tics === 0) bell0.play()
 
-    // Проверяем окончание таймера
     if (playIsOn && percentage < 0.5) {
       setTimeout(() => setPlayIsOn(false), 1000)
     }
@@ -164,7 +162,9 @@ export const Timer = ({ bells }) => {
     setPlayIsOn(!playIsOn)
   }
 
-  const getClass = playIsOn ? 'timer-active timer-div' : 'timer timer-div'
+  const getClass = playIsOn
+    ? 'w-[300px] cursor-pointer transition-all duration-[800ms] ease-in-out [-webkit-tap-highlight-color:transparent] bg-bg-secondary rounded-full scale-95'
+    : 'w-[300px] cursor-pointer transition-all duration-[800ms] ease-in-out [-webkit-tap-highlight-color:transparent] rounded-none scale-100'
 
   return (
     <div className={getClass} onClick={click}>
