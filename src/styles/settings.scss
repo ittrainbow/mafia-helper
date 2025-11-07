@@ -1,10 +1,20 @@
 .settings,
 .settings-active {
+  position: absolute;
+  top: 20px;
   width: 100%;
+  max-width: 300px;
   height: 40px;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
   color: #d6d7d9;
   transition: 0.5s ease;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 0;
+  box-sizing: border-box;
+  z-index: 10;
 }
 
 .settings-button,

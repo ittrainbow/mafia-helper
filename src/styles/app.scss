@@ -8,6 +8,8 @@
   max-height: 100vh;
   overflow: hidden;
   justify-content: center;
+  align-items: center;
+  position: relative;
 }
 
 .inner-container {
@@ -19,6 +21,7 @@
   justify-content: space-between;
   padding: 0 50px;
   width: 100%;
+  margin-top: 0;
 }
 
 @media (max-width: 768px) {
@@ -32,5 +35,10 @@
   .inner-container {
     padding: 0 20px;
     gap: 30px;
+  }
+  
+  .settings,
+  .settings-active {
+    max-width: 300px;
   }
 }

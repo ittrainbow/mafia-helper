@@ -187,14 +187,10 @@ export const Timer = ({ bells }) => {
           },
           text: {
             fill: '#d6d7d9',
-            fontWeight: 700,
+            fontWeight: 600,
             fontSize: '20px',
-            textAnchor: 'middle',
-            dominantBaseline: 'middle',
-            fontFamily: 'Courier, monospace',
-            fontVariantNumeric: 'normal',
-            transform: 'scaleY(1.08)',
-            transformOrigin: 'center center'
+            fontFamily: '"Helvetica", sans-serif',
+            letterSpacing: '0.05em'
           }
         }}
       />

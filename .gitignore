@@ -3,6 +3,8 @@
 # dependencies
 /node_modules
 /.firebase
+/.firebase/**/*
+*.cache
 /mp3
 /.pnp
 .pnp.js
