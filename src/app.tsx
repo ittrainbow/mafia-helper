@@ -4,14 +4,14 @@ import { useEffect, useState } from 'react'
 import { Player, Settings, Timer } from './components'
 import { SettingsModal } from './ui'
 
-const getAdvanced = localStorage.getItem('advanced') === 'true' || false
-const getBells = localStorage.getItem('bells') === 'true' || false
+const getAdvanced = localStorage.getItem('advanced') === 'true'
+const getBells = localStorage.getItem('bells') === 'true'
 
 export function App() {
   const nosleep = new NoSleep()
-  const [modal, setModal] = useState(false)
-  const [advanced, setAdvanced] = useState(getAdvanced)
-  const [bells, setBells] = useState(getBells)
+  const [isModal, setIsModal] = useState(false)
+  const [isAdvanced, setIsAdvanced] = useState(getAdvanced)
+  const [isBells, setIsBells] = useState(getBells)
   const [opacity, setOpacity] = useState(0)
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export function App() {
     nosleep.enable() // eslint-disable-next-line
   }, [])
 
-  const showModalHandler = (boolean) => setModal(boolean)
+  const showModalHandler = (boolean: boolean) => setIsModal(boolean)
 
   return (
     <>
@@ -29,19 +29,19 @@ export function App() {
           opacity === 1 ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        <Settings showModalHandler={showModalHandler} modal={modal} />
+        <Settings showModalHandler={showModalHandler} isModal={isModal} />
         <div className="box-border flex flex-col items-center gap-10 justify-between px-12 w-full mt-0 mobile:px-5 mobile:gap-8">
-          <Timer bells={bells} />
-          <Player advanced={advanced} />
+          <Timer isBells={isBells} />
+          <Player isAdvanced={isAdvanced} />
         </div>
       </div>
       <SettingsModal
-        modal={modal}
+        isModal={isModal}
         onClose={showModalHandler}
-        advanced={advanced}
-        bells={bells}
-        setAdvanced={setAdvanced}
-        setBells={setBells}
+        isAdvanced={isAdvanced}
+        isBells={isBells}
+        setIsAdvanced={setIsAdvanced}
+        setIsBells={setIsBells}
       />
     </>
   )

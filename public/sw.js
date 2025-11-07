@@ -91,46 +91,47 @@ self.addEventListener('fetch', (event) => {
           })
         })
     )
-  } else {
-    // Для остальных ресурсов используем CacheFirst с обновлением
-    event.respondWith(
-      caches.match(event.request)
-        .then((response) => {
-          // Возвращаем из кеша, если есть
-          if (response) {
-            // В фоне обновляем кэш
-            fetch(event.request).then((networkResponse) => {
-              if (networkResponse && networkResponse.status === 200) {
-                caches.open(CACHE_NAME).then((cache) => {
-                  cache.put(event.request, networkResponse.clone())
-                })
-              }
-            }).catch(() => {
-              // Игнорируем ошибки обновления
-            })
-            return response
-          }
-          // Иначе делаем сетевой запрос
-          return fetch(event.request).then((response) => {
-            // Проверяем валидность ответа
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response
-            }
-            // Клонируем ответ и сохраняем в кэш
-            const responseToCache = response.clone()
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, responseToCache)
-            })
-            return response
-          })
-        })
-        .catch(() => {
-          // Если запрос не удался и это навигация, возвращаем офлайн страницу
-          if (event.request.mode === 'navigate') {
-            return caches.match('/index.html')
-          }
-        })
-    )
+    return
   }
+
+  // Для остальных ресурсов используем CacheFirst с обновлением
+  event.respondWith(
+    caches.match(event.request)
+      .then((response) => {
+        // Возвращаем из кеша, если есть
+        if (response) {
+          // В фоне обновляем кэш
+          fetch(event.request).then((networkResponse) => {
+            if (networkResponse && networkResponse.status === 200) {
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(event.request, networkResponse.clone())
+              })
+            }
+          }).catch(() => {
+            // Игнорируем ошибки обновления
+          })
+          return response
+        }
+        // Иначе делаем сетевой запрос
+        return fetch(event.request).then((response) => {
+          // Проверяем валидность ответа
+          if (!response || response.status !== 200 || response.type !== 'basic') {
+            return response
+          }
+          // Клонируем ответ и сохраняем в кэш
+          const responseToCache = response.clone()
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache)
+          })
+          return response
+        })
+      })
+      .catch(() => {
+        // Если запрос не удался и это навигация, возвращаем офлайн страницу
+        if (event.request.mode === 'navigate') {
+          return caches.match('/index.html')
+        }
+      })
+  )
 })
 

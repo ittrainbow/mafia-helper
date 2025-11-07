@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: 'Helvetica';
-  src: url('./assets/Helvetica-01.otf') format('opentype');
+  src: url('./assets/helvetica.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -19,9 +19,8 @@
 
   body {
     @apply m-0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-      sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
+      'Droid Sans', 'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: #30384b;
@@ -134,8 +133,8 @@
 
   body {
     line-height: 1.15;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-      'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
+      'Droid Sans', 'Helvetica Neue', sans-serif;
   }
 
   ol,
@@ -165,7 +164,7 @@
   .CircularProgressbar-text {
     text-anchor: middle !important;
     dominant-baseline: middle !important;
-    font-family: "Helvetica", sans-serif !important;
+    font-family: 'Helvetica', sans-serif !important;
     font-weight: normal !important;
     font-style: normal !important;
     font-display: swap !important;
@@ -181,4 +180,3 @@
     }
   }
 }
-

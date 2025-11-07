@@ -1,4 +1,6 @@
-export function SettingsIcon({ color = '#93c5fd' }) {
+import { SettingsIconProps } from '../types'
+
+export function SettingsIcon({ color = '#93c5fd' }: SettingsIconProps) {
   return (
     <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
