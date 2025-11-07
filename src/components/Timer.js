@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import { getDownloadURL, getStorage, ref } from 'firebase/storage'
+import { useEffect, useRef, useState } from 'react'
 import { CircularProgressbar } from 'react-circular-progressbar'
-import { getStorage, ref, getDownloadURL } from 'firebase/storage'
 import 'react-circular-progressbar/dist/styles.css'
 
-import { getColor } from '../helpers'
 import { app } from '../db/firebase'
+import { getColor } from '../helpers'
 
 export const Timer = ({ bells }) => {
   const storage = getStorage(app)
@@ -31,20 +31,45 @@ export const Timer = ({ bells }) => {
     // eslint-disable-next-line
   }, [])
 
+  const rewindIntervalRef = useRef(null)
+
   useEffect(() => {
-    const newPercentage = Math.round((percentage - 0.417) * 100) / 100 // default 417
+    if (!playIsOn) {
+      rewindIntervalRef.current = setInterval(() => {
+        setPercentage((prevPercentage) => {
+          if (prevPercentage >= 100) {
+            if (rewindIntervalRef.current) {
+              clearInterval(rewindIntervalRef.current)
+              rewindIntervalRef.current = null
+            }
+            return 100
+          }
+          const newPercentage = prevPercentage + 2.5 > 100 ? 100 : prevPercentage + 2.5
+          return newPercentage
+        })
+      }, 25)
+    } else {
+      if (rewindIntervalRef.current) {
+        clearInterval(rewindIntervalRef.current)
+        rewindIntervalRef.current = null
+      }
+    }
+
+    return () => {
+      if (rewindIntervalRef.current) {
+        clearInterval(rewindIntervalRef.current)
+      }
+    }
+  }, [playIsOn])
+
+  useEffect(() => {
+    const newPercentage = Math.round((percentage - 0.417) * 100) / 100 // 0.417% per 250ms for 60 seconds
 
     playIsOn &&
       setTimeout(() => {
         newPercentage >= 0 && setPercentage(newPercentage)
         if (newPercentage < 0.5) setTimeout(() => setPlayIsOn(false), 1000)
       }, 250) // default 250
-
-    !playIsOn &&
-      setTimeout(() => {
-        const newPercentage = percentage + 1 > 100 ? 100 : percentage + 1
-        setPercentage(newPercentage)
-      }, 25)
 
     const tics = Math.round((percentage * 60) / 100)
     const text = tics === 60 ? '01:00' : tics > 9 ? '00:' + tics : '00:0' + tics
@@ -69,7 +94,7 @@ export const Timer = ({ bells }) => {
         value={percentage}
         text={timerText}
         percentage={percentage}
-        strokeWidth={2 + (100 - percentage) * 0.03}
+        strokeWidth={5 + (100 - percentage) * 0.03}
         styles={{
           path: {
             stroke: color,

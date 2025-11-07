@@ -1,7 +1,6 @@
-import * as React from 'react'
-import Box from '@mui/material/Box'
-import { Modal as MUIModal, Fade } from '@mui/material/'
 import { Switch } from '@mui/material'
+import { Fade, Modal as MUIModal } from '@mui/material/'
+import Box from '@mui/material/Box'
 import { ThemeProvider } from '@mui/system'
 
 import { darkTheme } from './theme'
@@ -47,22 +46,14 @@ export const Modal = ({ modal, onClose, advanced, setAdvanced, bells, setBells }
         <Fade in={modal}>
           <Box sx={style} className="modal-container">
             <div className="modal-switch">
-              <div className="modal-text">Simple player</div>
-              <Switch
-                checked={advanced}
-                onChange={onChangeLoopHandler}
-                inputProps={{ 'aria-label': 'controlled' }}
-              />
-              <div className="modal-text">Piano loop</div>
+              {/* <div className="modal-text">Мелодия</div> */}
+              <div className="modal-text">Фортепиано</div>
+              <Switch checked={advanced} onChange={onChangeLoopHandler} inputProps={{ 'aria-label': 'controlled' }} />
             </div>
-            <div className="modal-switch">
-              <div className="modal-text">Bells off</div>
-              <Switch
-                checked={bells}
-                onChange={onChangeBellHandler}
-                inputProps={{ 'aria-label': 'controlled' }}
-              />
-              <div className="modal-text">Bells on</div>
+            <div className="modal-switch flexcol">
+              {/* <div className="modal-text">Bells off</div> */}
+              <div className="modal-text">Колокольчики</div>
+              <Switch checked={bells} onChange={onChangeBellHandler} inputProps={{ 'aria-label': 'controlled' }} />
             </div>
             <Button onClick={() => onClose(false)} className="modal-button button" label="OK" />
           </Box>
