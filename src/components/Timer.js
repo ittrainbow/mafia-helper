@@ -32,9 +32,27 @@ export const Timer = ({ bells }) => {
   }, [])
 
   const rewindIntervalRef = useRef(null)
+  const countdownTimeoutRef = useRef(null)
+  const playIsOnRef = useRef(playIsOn)
+
+  useEffect(() => {
+    playIsOnRef.current = playIsOn
+  }, [playIsOn])
 
   useEffect(() => {
     if (!playIsOn) {
+      // Очищаем таймаут обратного отсчета перед запуском перемотки
+      if (countdownTimeoutRef.current) {
+        clearTimeout(countdownTimeoutRef.current)
+        countdownTimeoutRef.current = null
+      }
+
+      // Очищаем предыдущий интервал перед созданием нового
+      if (rewindIntervalRef.current) {
+        clearInterval(rewindIntervalRef.current)
+        rewindIntervalRef.current = null
+      }
+
       rewindIntervalRef.current = setInterval(() => {
         setPercentage((prevPercentage) => {
           if (prevPercentage >= 100) {
@@ -49,27 +67,71 @@ export const Timer = ({ bells }) => {
         })
       }, 25)
     } else {
+      // Очищаем интервал обратной перемотки при запуске таймера
       if (rewindIntervalRef.current) {
         clearInterval(rewindIntervalRef.current)
         rewindIntervalRef.current = null
       }
+      // Сбрасываем процент в 100% при запуске таймера
+      setPercentage((prevPercentage) => {
+        if (prevPercentage < 100) {
+          return 100
+        }
+        return prevPercentage
+      })
     }
 
     return () => {
       if (rewindIntervalRef.current) {
         clearInterval(rewindIntervalRef.current)
+        rewindIntervalRef.current = null
+      }
+      if (countdownTimeoutRef.current) {
+        clearTimeout(countdownTimeoutRef.current)
+        countdownTimeoutRef.current = null
       }
     }
   }, [playIsOn])
 
   useEffect(() => {
-    const newPercentage = Math.round((percentage - 0.417) * 100) / 100 // 0.417% per 250ms for 60 seconds
+    if (playIsOn) {
+      // Очищаем предыдущий таймаут перед созданием нового
+      if (countdownTimeoutRef.current) {
+        clearTimeout(countdownTimeoutRef.current)
+        countdownTimeoutRef.current = null
+      }
 
-    playIsOn &&
-      setTimeout(() => {
-        newPercentage >= 0 && setPercentage(newPercentage)
-        if (newPercentage < 0.5) setTimeout(() => setPlayIsOn(false), 1000)
-      }, 250) // default 250
+      const scheduleNextTick = () => {
+        countdownTimeoutRef.current = setTimeout(() => {
+          // Проверяем актуальное состояние через ref
+          if (!playIsOnRef.current) {
+            countdownTimeoutRef.current = null
+            return
+          }
+
+          setPercentage((prevPercentage) => {
+            const newPercentage = Math.round((prevPercentage - 0.417) * 100) / 100 // 0.417% per 250ms for 60 seconds
+            if (newPercentage >= 0) {
+              return newPercentage
+            }
+            return 0
+          })
+          countdownTimeoutRef.current = null
+          // Рекурсивно запускаем следующий тик, если таймер все еще активен
+          if (playIsOnRef.current) {
+            scheduleNextTick()
+          }
+        }, 250) // default 250
+      }
+
+      scheduleNextTick()
+    } else {
+      // Очищаем таймаут при остановке таймера
+      if (countdownTimeoutRef.current) {
+        clearTimeout(countdownTimeoutRef.current)
+        countdownTimeoutRef.current = null
+      }
+    }
 
     const tics = Math.round((percentage * 60) / 100)
     const text = tics === 60 ? '01:00' : tics > 9 ? '00:' + tics : '00:0' + tics
@@ -78,13 +140,29 @@ export const Timer = ({ bells }) => {
     if (playIsOn && bells && tics === 10) bell10.play()
     if (playIsOn && bells && tics === 0) bell0.play()
 
+    // Проверяем окончание таймера
+    if (playIsOn && percentage < 0.5) {
+      setTimeout(() => setPlayIsOn(false), 1000)
+    }
+
     setColor(color)
     setTimerText(text)
 
     // eslint-disable-next-line
   }, [percentage, playIsOn])
 
-  const click = () => setPlayIsOn(!playIsOn)
+  const click = () => {
+    if (!playIsOn) {
+      // При запуске таймера сбрасываем в начало, если процент не 100%
+      setPercentage((prevPercentage) => {
+        if (prevPercentage < 100) {
+          return 100
+        }
+        return prevPercentage
+      })
+    }
+    setPlayIsOn(!playIsOn)
+  }
 
   const getClass = playIsOn ? 'timer-active timer-div' : 'timer timer-div'
 
@@ -110,7 +188,13 @@ export const Timer = ({ bells }) => {
           text: {
             fill: '#d6d7d9',
             fontWeight: 600,
-            fontSize: '18px'
+            fontSize: '20px',
+            textAnchor: 'middle',
+            dominantBaseline: 'middle',
+            fontFamily: 'Courier, monospace',
+            fontVariantNumeric: 'normal',
+            transform: 'scaleY(1.08)',
+            transformOrigin: 'center center'
           }
         }}
       />

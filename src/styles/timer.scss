@@ -4,6 +4,18 @@
   cursor: pointer;
   transition: 0.8s ease-in-out;
   -webkit-tap-highlight-color: transparent;
+  
+  // Фиксируем позицию текста внутри круга
+  .CircularProgressbar-text {
+    text-anchor: middle !important;
+    dominant-baseline: middle !important;
+    font-family: Courier, monospace !important;
+    font-variant-numeric: normal !important;
+    transform: translateX(0) scaleY(1.08) !important;
+    transform-origin: center center !important;
+    width: 100% !important;
+    text-align: center !important;
+  }
 }
 
 .timer {

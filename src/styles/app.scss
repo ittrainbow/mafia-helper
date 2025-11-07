@@ -3,6 +3,11 @@
   flex-direction: column;
   padding: 0 50px;
   transition: .5s ease-in;
+  box-sizing: border-box;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  justify-content: center;
 }
 
 .inner-container {
@@ -13,4 +18,19 @@
   gap: 40px;
   justify-content: space-between;
   padding: 0 50px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 20px;
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+  }
+
+  .inner-container {
+    padding: 0 20px;
+    gap: 30px;
+  }
 }

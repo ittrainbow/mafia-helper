@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { getStorage, ref, getDownloadURL } from 'firebase/storage'
+import { getDownloadURL, getStorage, ref } from 'firebase/storage'
+import { useEffect, useState } from 'react'
 
 import { app } from '../db/firebase'
 import { Button } from '../UI/Button'
@@ -8,9 +8,11 @@ const num = 18
 
 export const Player = ({ advanced }) => {
   const storage = getStorage(app)
-  const [audioMafia, setAudioMafia] = useState(null)
+  console.log(123, storage)
   const [audioRoles, setAudioRoles] = useState(null)
   const [audioNight, setAudioNight] = useState(null)
+  const [audioBreak, setAudioBreak] = useState(null)
+  const [audioDogovorka, setAudioDogovorka] = useState(null)
   const [nextAudio, setNextAudio] = useState(null)
   const [nextAudioId, setNextAudioId] = useState(null)
   const [buttonActive, setButtonActive] = useState(null)
@@ -21,14 +23,16 @@ export const Player = ({ advanced }) => {
   const [array, setArray] = useState([])
 
   const audioArray = [
-    { index: 0, label: 'Mafia', setter: setAudioMafia, disabled: !audioMafia },
-    { index: 1, label: 'Roles', setter: setAudioRoles, disabled: !audioRoles },
-    {
-      index: 2,
-      label: 'Night',
-      setter: setAudioNight,
-      disabled: advanced ? !nextAudio : !audioNight
-    }
+    { index: 0, label: 'new_roles', setter: setAudioRoles, disabled: !audioRoles, buttonText: 'Роли' },
+    { index: 1, label: 'new_dogovorka', setter: setAudioDogovorka, disabled: !audioDogovorka, buttonText: 'Договорка' },
+    { index: 2, label: 'new_night', setter: setAudioNight, disabled: !audioNight, buttonText: 'Ночь' },
+    { index: 3, label: 'new_break', setter: setAudioBreak, disabled: !audioBreak, buttonText: 'Перерыв' }
+    // {
+    //   index: 2,
+    //   label: 'Night',
+    //   setter: setAudioNight,
+    //   disabled: advanced ? !nextAudio : !audioNight
+    // }
   ]
 
   useEffect(() => {
@@ -39,7 +43,7 @@ export const Player = ({ advanced }) => {
       getDownloadURL(ref(storage, url(label))).then((response) => setter(response))
     })
 
-    const array = Array.from(Array(num).keys()).sort((a, b) => 0.5 - Math.random())
+    const array = Array.from(Array(num).keys()).sort(() => 0.5 - Math.random())
     getDownloadURL(ref(storage, url(array[num - 1]))).then((response) => {
       const nextAudio = response
       setNextAudio(nextAudio)
@@ -73,11 +77,13 @@ export const Player = ({ advanced }) => {
       const audio = () => {
         switch (index) {
           case 0:
-            return new Audio(audioMafia)
-          case 1:
             return new Audio(audioRoles)
+          case 1:
+            return new Audio(audioDogovorka)
           case 2:
             return new Audio(audioNight)
+          case 3:
+            return new Audio(audioBreak)
           default:
             return
         }
@@ -95,10 +101,10 @@ export const Player = ({ advanced }) => {
     if (index !== buttonActive) {
       switch (index) {
         case 0:
-          setCurrentAudio(new Audio(audioMafia))
+          setCurrentAudio(new Audio(audioRoles))
           break
         case 1:
-          setCurrentAudio(new Audio(audioRoles))
+          setCurrentAudio(new Audio(audioDogovorka))
           break
         case 2:
           if (advanced) {
@@ -108,6 +114,9 @@ export const Player = ({ advanced }) => {
           } else {
             setCurrentAudio(audioNight)
           }
+          break
+        case 3:
+          setCurrentAudio(new Audio(audioBreak))
           break
         default:
           break
@@ -151,8 +160,8 @@ export const Player = ({ advanced }) => {
   return (
     <div className="buttons-container">
       <div className="buttons">
-        {audioArray.map((audio) => {
-          const { label, index, disabled } = audio
+        {audioArray.slice(0, 2).map((audio) => {
+          const { buttonText, index, disabled } = audio
           const getClass = () => (index === buttonActive ? 'button-active' : 'button')
           return (
             <Button
@@ -160,7 +169,22 @@ export const Player = ({ advanced }) => {
               className={getClass()}
               onClick={() => playHandler(index)}
               disabled={disabled}
-              label={label}
+              label={buttonText}
+            />
+          )
+        })}
+      </div>
+      <div className="buttons">
+        {audioArray.slice(2, 4).map((audio) => {
+          const { buttonText, index, disabled } = audio
+          const getClass = () => (index === buttonActive ? 'button-active' : 'button')
+          return (
+            <Button
+              key={index}
+              className={getClass()}
+              onClick={() => playHandler(index)}
+              disabled={disabled}
+              label={buttonText}
             />
           )
         })}
@@ -170,9 +194,9 @@ export const Player = ({ advanced }) => {
           className="button"
           disabled={!currentAudio}
           onClick={pauseHandler}
-          label={currentAudioPlaying || !currentAudio ? 'Pause' : 'Resume'}
+          label={currentAudioPlaying || !currentAudio ? 'Пауза' : 'Играть'}
         />
-        <Button className="button" disabled={!currentAudio} onClick={stopHandler} label="Stop" />
+        <Button className="button" disabled={!currentAudio} onClick={stopHandler} label="Стоп" />
       </div>
     </div>
   )

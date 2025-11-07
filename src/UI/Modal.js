@@ -52,7 +52,7 @@ export const Modal = ({ modal, onClose, advanced, setAdvanced, bells, setBells }
             </div>
             <div className="modal-switch flexcol">
               {/* <div className="modal-text">Bells off</div> */}
-              <div className="modal-text">Колокольчики</div>
+              <div className="modal-text">Уведомления</div>
               <Switch checked={bells} onChange={onChangeBellHandler} inputProps={{ 'aria-label': 'controlled' }} />
             </div>
             <Button onClick={() => onClose(false)} className="modal-button button" label="OK" />

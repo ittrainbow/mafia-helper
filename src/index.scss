@@ -152,5 +152,21 @@ table {
 html,
 body,
 #root {
+  height: 100vh;
   max-height: 100vh;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  html,
+  body,
+  #root {
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+  }
 }
