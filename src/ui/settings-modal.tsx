@@ -12,8 +12,13 @@ export function SettingsModal({ isModal, onClose, isAdvanced, setIsAdvanced, isB
   useEffect(() => {
     if (isModal) {
       setIsShouldRender(true)
-      const timeout = setTimeout(() => setIsVisible(true), 10)
-      return () => clearTimeout(timeout)
+      // Используем requestAnimationFrame для гарантии, что DOM обновился перед анимацией
+      const frameId = requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setIsVisible(true)
+        })
+      })
+      return () => cancelAnimationFrame(frameId)
     }
 
     setIsVisible(false)
@@ -32,7 +37,7 @@ export function SettingsModal({ isModal, onClose, isAdvanced, setIsAdvanced, isB
     >
       <div
         className={clsx(
-          'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full min-w-80 max-w-80 rounded-2xl shadow-2xl z-50 transition-all duration-300 ease-in-out bg-bg-primary relative flex flex-col gap-6 items-center p-6 border border-blue-300',
+          'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full min-w-80 max-w-80 rounded-2xl shadow-2xl z-50 transition-all duration-300 ease-in-out bg-bg-primary flex flex-col gap-6 items-center p-6 border border-blue-300',
           isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
         )}
         onClick={(e) => e.stopPropagation()}

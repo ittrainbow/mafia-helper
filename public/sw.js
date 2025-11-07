@@ -4,7 +4,9 @@ const urlsToCache = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/favicon-mafia.ico'
+  '/favicon-mafia.ico',
+  '/icon-192.png',
+  '/icon-512.png'
 ]
 
 // Установка service worker
