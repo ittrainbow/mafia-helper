@@ -187,7 +187,7 @@ export const Timer = ({ bells }) => {
           },
           text: {
             fill: '#d6d7d9',
-            fontWeight: 600,
+            fontWeight: 700,
             fontSize: '20px',
             textAnchor: 'middle',
             dominantBaseline: 'middle',

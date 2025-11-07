@@ -11,10 +11,22 @@
     dominant-baseline: middle !important;
     font-family: Courier, monospace !important;
     font-variant-numeric: normal !important;
+    font-weight: 700 !important;
     transform: translateX(0) scaleY(1.08) !important;
     transform-origin: center center !important;
     width: 100% !important;
     text-align: center !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .timer,
+  .timer-active {
+    .CircularProgressbar-text {
+      font-weight: 800 !important;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
   }
 }
 
