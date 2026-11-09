@@ -1,7 +1,12 @@
-Mafia card game helper
+# Mafia helper
 
-Countdown timer with audio-player (two variants, simple is looping one track for night mode and advanced is looping one of 18 piano tracks)
+Countdown timer with looping audio tracks for roles / negotiation / night / break.
 
-react, typescript, firebase, tailwind
+Stack: React, TypeScript, Tailwind.
 
-https://circle-38cc7.web.app/
+## Scripts
+
+- `yarn start` — local dev
+- `yarn build` — production build
+
+Audio files live in `public/audio/`.

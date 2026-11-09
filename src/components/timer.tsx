@@ -1,10 +1,8 @@
-import { getDownloadURL, getStorage, ref } from 'firebase/storage'
 import { KeyboardEvent, useEffect, useRef, useState } from 'react'
 import { CircularProgressbar } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css'
 
 import clsx from 'clsx'
-import { app } from '../db/firebase'
 import { TimerProps } from '../types'
 
 function getColor(percentage: number): string {
@@ -13,29 +11,38 @@ function getColor(percentage: number): string {
   return `rgba(${red}, ${green}, 0, 1)`
 }
 
-export function Timer({ isBells }: TimerProps) {
-  const storage = getStorage(app)
+const audioSrc = (file: string) => `${process.env.PUBLIC_URL}/audio/${file}`
 
+function createBell(file: string) {
+  const audio = new Audio(audioSrc(file))
+  audio.preload = 'auto'
+  return audio
+}
+
+export function Timer({ isBells }: TimerProps) {
   const [timerText, setTimerText] = useState('01:00')
-  const [bell10, setBell10] = useState<HTMLAudioElement | null>(null)
-  const [bell0, setBell0] = useState<HTMLAudioElement | null>(null)
   const [color, setColor] = useState('rgba(0, 255, 0, .8')
   const [isPlaying, setIsPlaying] = useState(false)
   const [percentage, setPercentage] = useState(100)
 
+  const bell10Ref = useRef<HTMLAudioElement | null>(null)
+  const bell0Ref = useRef<HTMLAudioElement | null>(null)
+  const lastBellTickRef = useRef<number | null>(null)
+
   useEffect(() => {
-    const url = (variable: string) => `gs://circle-38cc7.appspot.com/${variable}.mp3`
+    bell10Ref.current = createBell('bell-single.mp3')
+    bell0Ref.current = createBell('bell-double.mp3')
 
-    getDownloadURL(ref(storage, url('bell10'))).then((response) => {
-      const audio = new Audio(response)
-      setBell10(audio)
-    })
-
-    getDownloadURL(ref(storage, url('bell0'))).then((response) => {
-      const audio = new Audio(response)
-      setBell0(audio)
-    })
-    // eslint-disable-next-line
+    return () => {
+      ;[bell10Ref.current, bell0Ref.current].forEach((audio) => {
+        if (!audio) return
+        audio.pause()
+        audio.removeAttribute('src')
+        audio.load()
+      })
+      bell10Ref.current = null
+      bell0Ref.current = null
+    }
   }, [])
 
   const rewindIntervalRef = useRef<NodeJS.Timeout | null>(null)
@@ -140,15 +147,19 @@ export function Timer({ isBells }: TimerProps) {
     const text = tics === 60 ? '01:00' : tics > 9 ? '00:' + tics : '00:0' + tics
     const color = getColor(percentage)
 
-    if (isPlaying && isBells && tics === 10 && bell10) bell10.play()
-    if (isPlaying && isBells && tics === 0 && bell0) bell0.play()
+    if (isPlaying && isBells && lastBellTickRef.current !== tics) {
+      if (tics === 10) void bell10Ref.current?.play()
+      if (tics === 0) void bell0Ref.current?.play()
+      lastBellTickRef.current = tics
+    }
+    if (!isPlaying) lastBellTickRef.current = null
     if (isPlaying && percentage < 0.5) setTimeout(() => setIsPlaying(false), 1000)
 
     setColor(color)
     setTimerText(text)
 
     // eslint-disable-next-line
-  }, [percentage, isPlaying, isBells, bell10, bell0])
+  }, [percentage, isPlaying, isBells])
 
   const onClick = () => {
     if (!isPlaying) {

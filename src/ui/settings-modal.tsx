@@ -5,7 +5,7 @@ import { SettingsModalProps } from '../types'
 import { Button } from './button'
 import { Switcher } from './switcher'
 
-export function SettingsModal({ isModal, onClose, isAdvanced, setIsAdvanced, isBells, setIsBells }: SettingsModalProps) {
+export function SettingsModal({ isModal, onClose, isBells, setIsBells }: SettingsModalProps) {
   const [isVisible, setIsVisible] = useState(false)
   const [isShouldRender, setIsShouldRender] = useState(false)
 
@@ -42,17 +42,6 @@ export function SettingsModal({ isModal, onClose, isAdvanced, setIsAdvanced, isB
         )}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex w-full justify-center flex-row transition-all duration-500 gap-2.5">
-          <div className="flex w-[40%] items-center justify-center text-blue-300">Фортепиано</div>
-          <Switcher
-            isChecked={isAdvanced}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-              const newValue = e.target.checked
-              localStorage.setItem('advanced', String(newValue))
-              setIsAdvanced(newValue)
-            }}
-          />
-        </div>
         <div className="flex w-full justify-center flex-row transition-all duration-500 gap-2.5">
           <div className="flex w-[40%] items-center justify-center text-blue-300">Колокольчик</div>
           <Switcher

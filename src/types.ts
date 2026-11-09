@@ -1,15 +1,9 @@
 import { ChangeEvent } from 'react'
 
 // Components types
-export type PlayerProps = {
-  isAdvanced: boolean
-}
-
 export type AudioItem = {
   index: number
-  label: string
-  setter: (url: string) => void
-  isDisabled: boolean
+  src: string
   buttonText: string
 }
 
@@ -44,8 +38,6 @@ export type SettingsIconProps = {
 export type SettingsModalProps = {
   isModal: boolean
   onClose: (boolean: boolean) => void
-  isAdvanced: boolean
-  setIsAdvanced: (value: boolean) => void
   isBells: boolean
   setIsBells: (value: boolean) => void
 }
